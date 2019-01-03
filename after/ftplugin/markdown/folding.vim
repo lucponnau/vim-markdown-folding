@@ -25,6 +25,11 @@ function! HeadingDepth(lnum)
   let level=0
   let thisline = getline(a:lnum)
   let hashCount = len(matchstr(thisline, '^#\{1,6}'))
+  
+  if len(matchstr(thisline, '^\* ')) > 0
+    let hashCount = 7
+  endif
+
   if hashCount > 0
     let level = hashCount
   else
@@ -75,12 +80,9 @@ function! s:HasSurroundingFencemarks(lnum)
 endfunction
 
 function! s:FoldText()
-  let level = HeadingDepth(v:foldstart)
-  let indent = repeat('#', level)
-  let title = substitute(getline(v:foldstart), '^#\+\s*', '', '')
   let foldsize = (v:foldend - v:foldstart)
   let linecount = '['.foldsize.' line'.(foldsize>1?'s':'').']'
-  return indent.' '.title.' '.linecount
+  return getline(v:foldstart).' '.linecount
 endfunction
 
 " API {{{1
