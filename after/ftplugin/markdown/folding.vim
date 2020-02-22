@@ -8,11 +8,21 @@ function! StackedMarkdownFolds()
 endfunction
 
 function! NestedMarkdownFolds()
-  let depth = HeadingDepth(v:lnum)
+  return DoNestedMarkdownFolds(v:lnum)
+endfunction
+
+function! DoNestedMarkdownFolds(lnum)
+  let depth = HeadingDepth(a:lnum)
   if depth > 0
     return ">".(depth - g:markdown_ignore_first)
   else
-    return "="
+    let nextline = getline(a:lnum + 1)
+    let hashCount = len(matchstr(nextline, '^#\{1,6}'))
+    if hashCount == 1
+      return ">1"
+    else
+      return "="
+    endif
   endif
 endfunction
 
